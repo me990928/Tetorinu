@@ -50,12 +50,23 @@ struct Block {
         [false, true, false]
     ], color: Color.purple)
     
+    let BlockShapeNull: BlockShape = .init(size: 0, pattern: [
+        [false, false, false],
+        [false, false, false],
+        [false, false, false],
+    ], color: Color.clear)
+    
     let BlockShapeMax: Int = 7
     
     var shape: BlockShape
     
+    
     init(shape: BlockShape, num: Int) {
         self.shape = shape
+    }
+    
+    init () {
+        self.shape = BlockShapeNull
     }
     
     func getShape() -> BlockShape {
