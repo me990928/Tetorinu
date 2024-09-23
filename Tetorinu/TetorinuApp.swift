@@ -25,7 +25,7 @@ struct TetorinuApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TetorinuField()
         }
         .modelContainer(sharedModelContainer)
     }
