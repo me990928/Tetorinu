@@ -68,14 +68,29 @@ struct TetorinuFieldView: View {
                         tetorinuVM.initBlock()
                         tetorinuVM.drawScreen()
                         
-                    } label: {
-                        Circle().frame(width: width * 0.3)
+                        Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { Timer in
+                            if tetorinuVM.isRunning {
+                                tetorinuVM.fallBlock()
+                            }
+                        }
                     }
-                    Button {
-                        tetorinuVM.downBlock.x += 1
-                    } label: {
-                        Circle().frame(width: width * 0.3)
-                    }
+                    Spacer()
+                    HStack {
+                        Button {
+                            tetorinuVM.minoControl(command: .left)
+                        } label: {
+                            Circle().frame(width: width * 0.3)
+                        }
+                        Button {
+                            tetorinuVM.minoControl(command: .rotate)
+                        } label: {
+                            Circle().frame(width: width * 0.3)
+                        }
+                        Button {
+                            tetorinuVM.minoControl(command: .right)
+                        } label: {
+                            Circle().frame(width: width * 0.3)
+                        }
 
                 }
             }
