@@ -185,6 +185,11 @@ class TetorinuViewModel {
     }
    
     func minoControl(command: Command){
+        
+        if isRunning == false {
+            return
+        }
+        
         let lastBlock = downBlock
         
         switch command {
