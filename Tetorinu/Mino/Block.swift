@@ -50,7 +50,7 @@ struct Block {
         [false, true, false]
     ], color: Color.purple)
     
-    let BlockShapeNull: BlockShape = .init(size: 0, pattern: [
+    let BlockShapeNull: BlockShape = .init(size: 3, pattern: [
         [false, false, false],
         [false, false, false],
         [false, false, false],
