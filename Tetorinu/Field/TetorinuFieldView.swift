@@ -92,6 +92,20 @@ struct TetorinuFieldView: View {
                             Circle().frame(width: width * 0.3)
                         }
 
+                    }
+                }
+                if !tetorinuVM.isRunning {
+                    Text("Tap to start").foregroundStyle(.red).onTapGesture {
+                        if !tetorinuVM.isRunning {
+                            tetorinuVM.isRunning.toggle()
+                        }
+                    }
+                }
+            }.onAppear(){
+                // 通知を監視する
+                NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { _ in
+                    tetorinuVM.isRunning = false
+                    print("App will resign active (moving to background)")
                 }
             }
         }
