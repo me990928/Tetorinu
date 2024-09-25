@@ -22,36 +22,42 @@ struct TetorinuFieldView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            VStack(spacing: 0){
-                Spacer()
-                ForEach(0..<tetorinuVM.fieldHeight, id: \.self) { y in
-                    HStack(spacing: 0){
-                        Spacer()
-                        ForEach(0..<tetorinuVM.fieldWidth, id: \.self) { x in
-                            
-                            if tetorinuVM.outputField[y][x].type == BlockType.BlockHard.rawValue {
-                                Rectangle()
-                                    .fill(Color.blue)
-                                    .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
+            ZStack {
+                VStack(spacing: 0){
+                    Spacer()
+                    ForEach(0..<tetorinuVM.fieldHeight, id: \.self) { y in
+                        HStack(spacing: 0){
+                            Spacer()
+                            ForEach(0..<tetorinuVM.fieldWidth, id: \.self) { x in
+                                
+                                if tetorinuVM.outputField[y][x].type == BlockType.BlockHard.rawValue {
+                                    Rectangle()
+                                        .fill(Color.white)
+                                        .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
+                                }
+                                
+                                if tetorinuVM.outputField[y][x].type == BlockType.BlockNone.rawValue {
+                                    Rectangle()
+                                        .fill(Color.black)
+                                        .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
+                                }
+                                
+                                if tetorinuVM.outputField[y][x].type == BlockType.BlockFall.rawValue {
+                                    Rectangle()
+                                        .fill(tetorinuVM.outputField[y][x].color)
+                                        .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
+                                }
+                                
+                                if tetorinuVM.outputField[y][x].type == BlockType.BlockSoft.rawValue {
+                                    Rectangle()
+                                        .fill(tetorinuVM.outputField[y][x].color)
+                                        .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
+                                }
                             }
-                            
-                            if tetorinuVM.outputField[y][x].type == BlockType.BlockNone.rawValue {
-                                Rectangle()
-                                    .fill(Color.black)
-                                    .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
-                            }
-                            
-                            if tetorinuVM.outputField[y][x].type == BlockType.BlockFall.rawValue {
-                                Rectangle()
-                                    .fill(Color.red)
-                                    .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
-                            }
-                            
-                            if tetorinuVM.outputField[y][x].type == BlockType.BlockSoft.rawValue {
-                                Rectangle()
-                                    .fill(Color.red)
-                                    .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
-                            }
+                            Spacer()
+                        }.onTapGesture {
+                            tetorinuVM.rotateBlock()
+                            tetorinuVM.drawScreen()
                         }
                         Spacer()
                     }.onTapGesture {
