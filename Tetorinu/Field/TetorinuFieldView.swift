@@ -121,24 +121,32 @@ struct TetorinuFieldView: View {
                         Button {
                             tetorinuVM.minoControl(command: .left)
                         } label: {
-                            Circle().frame(width: width * 0.2)
+                            Circle().frame(width: width * 0.2).overlay {
+                                    Image(systemName: "arrowtriangle.left.fill").foregroundStyle(.white)
+                                }
                         }
                         VStack{
                             Button {
                                 tetorinuVM.minoControl(command: .rotate)
                             } label: {
-                                Circle().frame(width: width * 0.2)
+                                Circle().frame(width: width * 0.2).overlay {
+                                    Image(systemName: "arrow.triangle.2.circlepath").foregroundStyle(.white).bold().font(.title2)
+                                }
                             }
                             Button {
                                 tetorinuVM.minoControl(command: .forward)
                             } label: {
-                                Circle().frame(width: width * 0.2)
+                                Circle().frame(width: width * 0.2).overlay {
+                                    Image(systemName: "arrowtriangle.down.fill").foregroundStyle(.white)
+                                }
                             }
                         }
                         Button {
                             tetorinuVM.minoControl(command: .right)
                         } label: {
-                            Circle().frame(width: width * 0.2)
+                            Circle().frame(width: width * 0.2).overlay {
+                                Image(systemName: "arrowtriangle.right.fill").foregroundStyle(.white)
+                            }
                         }
                         
                     }.padding(.vertical)
