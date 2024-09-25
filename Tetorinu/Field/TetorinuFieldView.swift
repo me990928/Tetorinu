@@ -22,105 +22,127 @@ struct TetorinuFieldView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                HStack{
-                    VStack(spacing: 0){
+                VStack{
+                    Spacer()
+                    HStack{
                         Spacer()
-                        ForEach(0..<tetorinuVM.fieldHeight, id: \.self) { y in
-                            HStack(spacing: 0){
-                                Spacer()
-                                ForEach(0..<tetorinuVM.fieldWidth, id: \.self) { x in
-                                    
-                                    if tetorinuVM.outputField[y][x].type == BlockType.BlockHard.rawValue {
-                                        Rectangle()
-                                            .fill(Color.white)
-                                            .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
-                                    }
-                                    
-                                    if tetorinuVM.outputField[y][x].type == BlockType.BlockNone.rawValue {
-                                        Rectangle()
-                                            .fill(Color.black)
-                                            .frame(width: blockSize, height: blockSize).border(Color.white, width: 0.2)
-                                    }
-                                    
-                                    if tetorinuVM.outputField[y][x].type == BlockType.BlockFall.rawValue {
-                                        Rectangle()
-                                            .fill(tetorinuVM.outputField[y][x].color)
-                                            .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
-                                    }
-                                    
-                                    if tetorinuVM.outputField[y][x].type == BlockType.BlockSoft.rawValue {
-                                        Rectangle()
-                                            .fill(tetorinuVM.outputField[y][x].color)
-                                            .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
-                                    }
-                                }
-                                Spacer()
-                            }.onTapGesture {
-                            }
-                        }.onAppear() {
-                            self.width = geometry.size.height * 0.4
-                            self.height = self.width * 2
-                            self.blockSize = self.width / 10
-                            //
-                            tetorinuVM.initTetorinu()
-                            tetorinuVM.initBlock()
-                            tetorinuVM.nextBlock()
-                            tetorinuVM.drawScreen()
-                            
-                            Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { Timer in
-                                if !tetorinuVM.isGameOver {
-                                    if tetorinuVM.isRunning {
-                                        tetorinuVM.fallBlock()
-                                    }
-                                }
-                            }
-                        }
-                        Spacer()
-                        HStack {
-                            Button {
-                                tetorinuVM.minoControl(command: .left)
-                            } label: {
-                                Circle().frame(width: width * 0.3)
-                            }
-                            Button {
-                                tetorinuVM.minoControl(command: .rotate)
-                            } label: {
-                                Circle().frame(width: width * 0.3)
-                            }
-                            Button {
-                                tetorinuVM.minoControl(command: .right)
-                            } label: {
-                                Circle().frame(width: width * 0.3)
-                            }
-                            
-                        }
-                    }
-                    
-                    VStack{
-                        HStack{
-                            Spacer()
-                            Text("next").foregroundStyle(.white)
-                            Spacer()
-                        }
                         VStack(spacing: 0){
-                            ForEach(0..<tetorinuVM.blockSizeMax, id: \.self) { y in
+                            ForEach(0..<tetorinuVM.fieldHeight, id: \.self) { y in
                                 HStack(spacing: 0){
-                                    ForEach(0..<tetorinuVM.blockSizeMax, id: \.self) { x in
-                                        if tetorinuVM.nextDownBlock.shape.getPattern()[y][x] {
+                                    Spacer()
+                                    ForEach(0..<tetorinuVM.fieldWidth, id: \.self) { x in
+                                        
+                                        if tetorinuVM.outputField[y][x].type == BlockType.BlockHard.rawValue {
                                             Rectangle()
-                                                .fill(tetorinuVM.nextDownBlock.shape.getColor())
-                                                .frame(width: blockSize * 0.6, height: blockSize * 0.6).border(Color.black, width: 0.2)
-                                        } else {
+                                                .fill(Color.white)
+                                                .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
+                                        }
+                                        
+                                        if tetorinuVM.outputField[y][x].type == BlockType.BlockNone.rawValue {
                                             Rectangle()
-                                                .fill(Color.gray)
-                                                .frame(width: blockSize * 0.6, height: blockSize * 0.6).border(Color.black, width: 0.2)
+                                                .fill(Color.black)
+                                                .frame(width: blockSize, height: blockSize).border(Color.white, width: 0.2)
+                                        }
+                                        
+                                        if tetorinuVM.outputField[y][x].type == BlockType.BlockFall.rawValue {
+                                            Rectangle()
+                                                .fill(tetorinuVM.outputField[y][x].color)
+                                                .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
+                                        }
+                                        
+                                        if tetorinuVM.outputField[y][x].type == BlockType.BlockSoft.rawValue {
+                                            Rectangle()
+                                                .fill(tetorinuVM.outputField[y][x].color)
+                                                .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
+                                        }
+                                    }
+                                    Spacer()
+                                }.onTapGesture {
+                                }
+                            }.onAppear() {
+                                self.width = geometry.size.height * 0.4
+                                self.height = self.width * 2
+                                self.blockSize = self.width / 10
+                                //
+                                tetorinuVM.initTetorinu()
+                                tetorinuVM.initBlock()
+                                tetorinuVM.nextBlock()
+                                tetorinuVM.drawScreen()
+                                
+                                Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { Timer in
+                                    if !tetorinuVM.isGameOver {
+                                        if tetorinuVM.isRunning {
+                                            tetorinuVM.fallBlock()
                                         }
                                     }
                                 }
                             }
-                        }.border(Color.white, width: 1)
-                        Spacer().frame(height: height)
+                        }
+                        Spacer()
+                        VStack(spacing: 0){
+                            
+                            
+                            Circle().fill(.blue).overlay {
+                                    Image(systemName: tetorinuVM.isRunning ? "pause.fill" : "play.fill").foregroundStyle(.white)
+                                }.padding(.bottom, 20)
+                                .onTapGesture {
+                                    tetorinuVM.isRunning.toggle()
+                                }
+
+                            
+                            HStack{
+                                Spacer()
+                                Text("next").foregroundStyle(.white)
+                                Spacer()
+                            }
+                            VStack(spacing: 0){
+                                ForEach(0..<tetorinuVM.blockSizeMax, id: \.self) { y in
+                                    HStack(spacing: 0){
+                                        ForEach(0..<tetorinuVM.blockSizeMax, id: \.self) { x in
+                                            if tetorinuVM.nextDownBlock.shape.getPattern()[y][x] {
+                                                Rectangle()
+                                                    .fill(tetorinuVM.nextDownBlock.shape.getColor())
+                                                    .frame(width: blockSize * 0.6, height: blockSize * 0.6).border(Color.black, width: 0.2)
+                                            } else {
+                                                Rectangle()
+                                                    .fill(Color.gray)
+                                                    .frame(width: blockSize * 0.6, height: blockSize * 0.6).border(Color.black, width: 0.2)
+                                            }
+                                        }
+                                    }
+                                }
+                            }.border(Color.white, width: 1)
+                            Spacer()
+                        }.padding(.top, 50)
+                        Spacer()
                     }
+                    
+                    HStack {
+                        Button {
+                            tetorinuVM.minoControl(command: .left)
+                        } label: {
+                            Circle().frame(width: width * 0.2)
+                        }
+                        VStack{
+                            Button {
+                                tetorinuVM.minoControl(command: .rotate)
+                            } label: {
+                                Circle().frame(width: width * 0.2)
+                            }
+                            Button {
+                                tetorinuVM.minoControl(command: .forward)
+                            } label: {
+                                Circle().frame(width: width * 0.2)
+                            }
+                        }
+                        Button {
+                            tetorinuVM.minoControl(command: .right)
+                        } label: {
+                            Circle().frame(width: width * 0.2)
+                        }
+                        
+                    }.padding(.vertical)
+                    Spacer()
                 }.background(Color.black)
                 
                 if tetorinuVM.isGameOver {
