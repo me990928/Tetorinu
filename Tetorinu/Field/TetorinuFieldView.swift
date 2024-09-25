@@ -67,28 +67,6 @@ struct TetorinuFieldView: View {
                         tetorinuVM.initTetorinu()
                         tetorinuVM.initBlock()
                         tetorinuVM.drawScreen()
-                    }
-                }.onAppear() {
-                    self.width = geometry.size.width * 0.8
-                    self.height = self.width * 2
-                    self.blockSize = self.width / 10
-                    //
-                    tetorinuVM.initTetorinu()
-                    tetorinuVM.initBlock()
-                    tetorinuVM.drawScreen()
-                    
-                    Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { Timer in
-                        tetorinuVM.fallBlock()
-                    }
-                }
-                Spacer()
-                HStack {
-                    Button {
-                        tetorinuVM.downBlock.x -= 1
-                    } label: {
-                        Circle().frame(width: width * 0.3)
-                    }
-                    Button {
                         
                     } label: {
                         Circle().frame(width: width * 0.3)
