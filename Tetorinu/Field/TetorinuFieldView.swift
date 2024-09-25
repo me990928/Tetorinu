@@ -59,9 +59,13 @@ struct TetorinuFieldView: View {
                             tetorinuVM.rotateBlock()
                             tetorinuVM.drawScreen()
                         }
-                        Spacer()
-                    }.onTapGesture {
-                        tetorinuVM.rotateBlock()
+                    }.onAppear() {
+                        self.width = geometry.size.width * 0.8
+                        self.height = self.width * 2
+                        self.blockSize = self.width / 10
+                        //
+                        tetorinuVM.initTetorinu()
+                        tetorinuVM.initBlock()
                         tetorinuVM.drawScreen()
                     }
                 }.onAppear() {
