@@ -67,9 +67,11 @@ struct TetorinuFieldView: View {
                             tetorinuVM.nextBlock()
                             tetorinuVM.drawScreen()
                             
-                            Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { Timer in
-                                if tetorinuVM.isRunning {
-                                    tetorinuVM.fallBlock()
+                            Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { Timer in
+                                if !tetorinuVM.isGameOver {
+                                    if tetorinuVM.isRunning {
+                                        tetorinuVM.fallBlock()
+                                    }
                                 }
                             }
                         }
@@ -120,19 +122,39 @@ struct TetorinuFieldView: View {
                         Spacer().frame(height: height)
                     }
                 }.background(Color.black)
-                if !tetorinuVM.isRunning {
-                    Text("Tap to start").foregroundStyle(.red).onTapGesture {
-                        if !tetorinuVM.isRunning {
-                            tetorinuVM.isRunning.toggle()
-                        }
+                
+                if tetorinuVM.isGameOver {
+                    VStack{
+                        Text("GAME OVER").bold().foregroundStyle(.red).font(.title)
+                        Text("Tap to Restart").bold().foregroundStyle(.red).font(.title)
+                    }.frame(width: geometry.size.width * 0.9, height: geometry.size.width * 0.5).background(
+                        .ultraThinMaterial,
+                        in: RoundedRectangle(cornerRadius: 30, style: .continuous)
+                     ).onTapGesture {
+                        tetorinuVM.isGameOver.toggle()
+                         
+                         tetorinuVM.initTetorinu()
+                         tetorinuVM.initBlock()
+                         tetorinuVM.nextBlock()
+                         tetorinuVM.drawScreen()
                     }
                 }
-            }.onAppear(){
-                // 通知を監視する
-                NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { _ in
-                    tetorinuVM.isRunning = false
-                    print("App will resign active (moving to background)")
+                if !tetorinuVM.isRunning && !tetorinuVM.isGameOver {
+                    VStack{
+                        Text("Tap to Start").font(.title).foregroundStyle(.red)
+                    }.frame(width: geometry.size.width * 0.5, height: geometry.size.width * 0.3).background(
+                        .ultraThinMaterial,
+                        in: RoundedRectangle(cornerRadius: 30, style: .continuous)
+                     ).onTapGesture {
+                        tetorinuVM.isRunning.toggle()
+                    }
                 }
+            }
+        }.onAppear(){
+            // 通知を監視する
+            NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { _ in
+                tetorinuVM.isRunning = false
+                print("App will resign active (moving to background)")
             }
         }
     }

@@ -27,6 +27,8 @@ class TetorinuViewModel {
     var nextDownBlock: DownBlock = .init()
     var isNextDownBlock: Bool = false
     
+    var isGameOver: Bool = false
+    
     init() {
         self.field = defaultField
         self.outputField = defaultField
@@ -49,11 +51,11 @@ class TetorinuViewModel {
             downBlock = nextDownBlock
             isNextDownBlock = false
         }
-        
         downBlock.x = fieldWidth / 2 - Block.init().BlockShapeNull.getSize() / 2
         downBlock.y = 0
     }
-   
+
+    
     func nextBlock(){
         nextDownBlock.shape = Block.init().getRandomShape()
         
@@ -143,7 +145,9 @@ class TetorinuViewModel {
         
         if blockIntersectField {
             // game over
-            initTetorinu()
+//            initTetorinu()
+            isGameOver = true
+            isRunning = false
         }
         
         drawScreen()
