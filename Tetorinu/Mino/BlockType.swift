@@ -10,5 +10,4 @@ enum BlockType: Int {
     case BlockHard = 1
     case BlockSoft = 2
     case BlockFall = 3
-    case BlockMax = 4
 }
