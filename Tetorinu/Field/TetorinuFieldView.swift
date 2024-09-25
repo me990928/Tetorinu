@@ -10,7 +10,6 @@ import SwiftUI
 struct TetorinuFieldView: View {
     
     @State var tetorinuVM: TetorinuViewModel = .init()
-    @State var timer = GameTimer()
     
     @State var width: CGFloat = 0
     @State var height: CGFloat = 0

@@ -12,23 +12,19 @@ class GameTimer: ObservableObject {
     
     var isRunning: Bool = false
     
-    var time: TimeInterval = 0
+    var time: Double = 1
     
     var cancellable = Set<AnyCancellable>()
     let changeTimerCalled = PassthroughSubject<Void, Never>()
     
-    init(time: TimeInterval) {
-        self.time = time
-        
-        changeTimerCalled.sink { [weak self] () in
-            guard let self else { return }
-            self.isRunning.toggle()
-        }.store(in: &cancellable)
+    init() {
     }
-    
-    func timeCheck() async throws {
-        Timer(timeInterval: time, repeats: false) {_ in 
-            self.changeTimerCalled.send()
+
+    func startTimer() async {
+        while isRunning {
+            sleep(UInt32(time))
+            print("hi")
+            
         }
     }
     
