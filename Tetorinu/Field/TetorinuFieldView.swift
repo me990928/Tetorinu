@@ -19,6 +19,8 @@ struct TetorinuFieldView: View {
     
     @State var blockSize: CGFloat = 10
     
+    @State var timer: Timer?
+    
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -69,13 +71,7 @@ struct TetorinuFieldView: View {
                                 tetorinuVM.nextBlock()
                                 tetorinuVM.drawScreen()
                                 
-                                Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { Timer in
-                                    if !tetorinuVM.isGameOver {
-                                        if tetorinuVM.isRunning {
-                                            tetorinuVM.fallBlock()
-                                        }
-                                    }
-                                }
+                                tetorinuVM.tetorinuTimer()
                             }
                         }
                         Spacer()

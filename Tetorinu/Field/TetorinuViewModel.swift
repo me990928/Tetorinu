@@ -16,6 +16,9 @@ class TetorinuViewModel {
     let fieldWidth: Int = 10
     let fieldHeight: Int = 20
     
+    var time: Double = 1
+    var timer: Timer?
+    
     var isRunning: Bool = false
     
     var field: [[Field]]
@@ -252,6 +255,37 @@ class TetorinuViewModel {
         } else {
             drawScreen()
         }
+    }
+    
+    func tetorinuTimer(){
+        
+        let minus: Double = 0.01
+        
+        // 初期値の確認
+        if time == 1 {
+            timer = Timer.scheduledTimer(withTimeInterval: time, repeats: true) { [self] Timer in
+                if !self.isGameOver {
+                    if self.isRunning {
+                        fallBlock()
+                    }
+                }
+            }
+            return
+        }
+        
+        if (time - minus) > 0 {
+            time -= minus
+            timer?.invalidate()
+            timer = Timer.scheduledTimer(withTimeInterval: time, repeats: true) { [self] Timer in
+                if !self.isGameOver {
+                    if self.isRunning {
+                        fallBlock()
+                    }
+                }
+            }
+            return
+        }
+        
     }
 }
 
