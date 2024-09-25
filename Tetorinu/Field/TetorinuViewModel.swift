@@ -24,6 +24,9 @@ class TetorinuViewModel {
     
     var downBlock: DownBlock = .init()
     
+    var nextDownBlock: DownBlock = .init()
+    var isNextDownBlock: Bool = false
+    
     init() {
         self.field = defaultField
         self.outputField = defaultField
@@ -35,15 +38,31 @@ class TetorinuViewModel {
     }
     
     func initBlock(){
-        downBlock.shape = Block.init().getRandomShape()
-        
-        let rotateCount: Int = Int.random(in: 0..<4)
-        for _ in 0..<rotateCount{
-            rotateBlock()
+        if !isNextDownBlock {
+            downBlock.shape = Block.init().getRandomShape()
+            
+            let rotateCount: Int = Int.random(in: 0..<4)
+            for _ in 0..<rotateCount{
+                rotateBlock()
+            }
+        } else {
+            downBlock = nextDownBlock
+            isNextDownBlock = false
         }
         
         downBlock.x = fieldWidth / 2 - Block.init().BlockShapeNull.getSize() / 2
         downBlock.y = 0
+    }
+   
+    func nextBlock(){
+        nextDownBlock.shape = Block.init().getRandomShape()
+        
+        let rotateCount: Int = Int.random(in: 0..<4)
+        for _ in 0..<rotateCount{
+            nextRotateBlock()
+        }
+        
+        isNextDownBlock = true
     }
     
     func rotateBlock(){
@@ -83,7 +102,27 @@ class TetorinuViewModel {
         
     }
     
+    func nextRotateBlock(){
+        var rotateBlockDownBlock: DownBlock = DownBlock()
+        rotateBlockDownBlock.shape = Block.init().getShape()
+        
+        let size: Int = nextDownBlock.shape.getSize()
+        
+        var newPattern: [[Bool]] = Block.init().BlockShapeNull.getPattern()
+        
+        // 90度回転
+        for y in 0..<size{
+            for x in 0..<size{
+                newPattern[size - 1 - x][y] = nextDownBlock.shape.getPattern()[y][x]
+            }
+        }
+        
+        nextDownBlock.shape.setPattern(newPattern)
+        
+    }
+    
     func fallBlock(){
+        
         let lastBlock: DownBlock = DownBlock(block: downBlock)
         downBlock.y += 1
         
@@ -99,6 +138,7 @@ class TetorinuViewModel {
             }
             eraseLine()
             initBlock()
+            nextBlock()
         }
         
         if blockIntersectField {

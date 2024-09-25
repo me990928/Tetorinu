@@ -64,6 +64,7 @@ struct TetorinuFieldView: View {
                             //
                             tetorinuVM.initTetorinu()
                             tetorinuVM.initBlock()
+                            tetorinuVM.nextBlock()
                             tetorinuVM.drawScreen()
                             
                             Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { Timer in
@@ -103,9 +104,9 @@ struct TetorinuFieldView: View {
                             ForEach(0..<tetorinuVM.blockSizeMax, id: \.self) { y in
                                 HStack(spacing: 0){
                                     ForEach(0..<tetorinuVM.blockSizeMax, id: \.self) { x in
-                                        if tetorinuVM.downBlock.shape.getPattern()[y][x] {
+                                        if tetorinuVM.nextDownBlock.shape.getPattern()[y][x] {
                                             Rectangle()
-                                                .fill(tetorinuVM.downBlock.shape.getColor())
+                                                .fill(tetorinuVM.nextDownBlock.shape.getColor())
                                                 .frame(width: blockSize * 0.6, height: blockSize * 0.6).border(Color.black, width: 0.2)
                                         } else {
                                             Rectangle()
