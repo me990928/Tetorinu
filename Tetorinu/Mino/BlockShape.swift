@@ -29,4 +29,8 @@ struct BlockShape {
     public mutating func setPattern(_ pattern: [[Bool]]) {
         self.pattern = pattern
     }
+    
+    public func getColor() -> Color {
+        color
+    }
 }
