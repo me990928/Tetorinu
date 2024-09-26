@@ -9,6 +9,7 @@ import SwiftUI
 import UIKit
 
 struct TetorinuFieldView: View {
+    @AppStorage("firstLaunch") var firstLaunch: Bool = true
     
     @State var tetorinuVM: TetorinuViewModel = .init()
     @StateObject var deviceOrientation: DeviceOrientation = DeviceOrientation()
@@ -39,31 +40,8 @@ struct TetorinuFieldView: View {
                                     Spacer()
                                     ForEach(0..<tetorinuVM.fieldWidth, id: \.self) { x in
                                         
-                                        if tetorinuVM.outputField[y][x].type == BlockType.BlockHard.rawValue {
-                                            Rectangle()
-                                                .fill(Color.white)
-                                                .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
-                                        }
+                                        MinoBlockView(blockSize: blockSize, color: tetorinuVM.outputField[y][x].color)
                                         
-                                        if tetorinuVM.outputField[y][x].type == BlockType.BlockNone.rawValue {
-                                            Rectangle()
-                                                .fill(Color.black)
-                                                .frame(width: blockSize, height: blockSize).border(Color.white, width: 0.2)
-                                        }
-                                        
-                                        if tetorinuVM.outputField[y][x].type == BlockType.BlockFall.rawValue {
-                                            Rectangle()
-                                                .fill(tetorinuVM.outputField[y][x].color)
-                                                .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2).onTapGesture {
-                                                    tetorinuVM.minoControl(command: .rotate)
-                                                }
-                                        }
-                                        
-                                        if tetorinuVM.outputField[y][x].type == BlockType.BlockSoft.rawValue {
-                                            Rectangle()
-                                                .fill(tetorinuVM.outputField[y][x].color)
-                                                .frame(width: blockSize, height: blockSize).border(Color.black, width: 0.2)
-                                        }
                                     }
                                     Spacer()
                                 }
@@ -98,10 +76,12 @@ struct TetorinuFieldView: View {
                         VStack(spacing: 0){
                             
                             Circle().fill(.blue).overlay {
-                                Image(systemName: tetorinuVM.isRunning ? "pause.fill" : "play.fill").foregroundStyle(.white)
+                                Image(systemName: tetorinuVM.isPause ? "pause.fill" : "play.fill").foregroundStyle(.white)
                             }.frame(width: width * 0.2).padding(.bottom, 20)
                                 .onTapGesture {
-                                    tetorinuVM.isRunning.toggle()
+                                    if tetorinuVM.isRunning {
+                                        tetorinuVM.isPause.toggle()
+                                    }
                                 }
                             
                             
@@ -117,11 +97,11 @@ struct TetorinuFieldView: View {
                                             if tetorinuVM.nextDownBlock.shape.getPattern()[y][x] {
                                                 Rectangle()
                                                     .fill(tetorinuVM.nextDownBlock.shape.getColor())
-                                                    .frame(width: blockSize * 0.6, height: blockSize * 0.6).border(Color.black, width: 0.2)
+                                                    .frame(width: blockSize * 0.6, height: blockSize * 0.6).border(Color.black, width: 0.3)
                                             } else {
                                                 Rectangle()
                                                     .fill(Color.gray)
-                                                    .frame(width: blockSize * 0.6, height: blockSize * 0.6).border(Color.black, width: 0.2)
+                                                    .frame(width: blockSize * 0.6, height: blockSize * 0.6).border(Color.black, width: 0.3)
                                             }
                                         }
                                     }
@@ -132,8 +112,12 @@ struct TetorinuFieldView: View {
                                 Text(tetorinuVM.score.description).foregroundStyle(.white).font(.caption)
                             }.padding(.top, 20)
                             VStack{
-                                Text("Speed").foregroundStyle(.white)
-                                Text(tetorinuVM.time.description).foregroundStyle(.white).font(.caption)
+                                Text("Best").foregroundStyle(.white)
+                                Text(tetorinuVM.bestScore.description).foregroundStyle(.white).font(.caption)
+                            }.padding(.top, 20)
+                            VStack{
+                                Text("Level").foregroundStyle(.white)
+                                Text(tetorinuVM.score > 1000 ? "Clear" : tetorinuVM.getLevel().description).foregroundStyle(.white).font(.caption)
                             }.padding(.top, 20)
                             
                             Spacer()
@@ -144,19 +128,11 @@ struct TetorinuFieldView: View {
                 }.background(Color.black)
                 
                 if tetorinuVM.isGameOver {
-                    VStack{
-                        Text("GAME OVER").bold().foregroundStyle(.red).font(.title)
-                        Text("Tap to Restart").bold().foregroundStyle(.red).font(.title)
-                    }.frame(width: geometry.size.width * 0.9, height: geometry.size.width * 0.5).background(
-                        .ultraThinMaterial,
-                        in: RoundedRectangle(cornerRadius: 30, style: .continuous)
-                    ).onTapGesture {
+                    GameOverView(tetorinuVM: $tetorinuVM).onTapGesture {
                         tetorinuVM.isGameOver.toggle()
                         
-                        tetorinuVM.initTetorinu()
-                        tetorinuVM.initBlock()
-                        tetorinuVM.nextBlock()
-                        tetorinuVM.drawScreen()
+                        print("start1")
+                        restartGame()
                     }
                 }
                 if !tetorinuVM.isRunning && !tetorinuVM.isGameOver {
@@ -167,15 +143,33 @@ struct TetorinuFieldView: View {
                         in: RoundedRectangle(cornerRadius: 30, style: .continuous)
                     ).onTapGesture {
                         tetorinuVM.isRunning.toggle()
+                        
+                        print("start2")
+                        startGame()
+                    }
+                }
+                if tetorinuVM.isPause {
+                    ResumeView().onTapGesture {
+                        tetorinuVM.isPause.toggle()
                     }
                 }
             }
-            TetorinuController(tetorinuVM: tetorinuVM)
-        }.onAppear(){
+            TetorinuController(tetorinuVM: $tetorinuVM)
+            VStack{
+                // kokukoku
+                let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(geometry.size.width)
+                BannerView(adSize).frame(height: adSize.size.height)
+                Spacer()
+            }
+        }.onChange(of: tetorinuVM.isGameOver, {
+            if tetorinuVM.isGameOver {
+                adInterstitialVM.showAd()
+            }
+        })
+        .onAppear(){
             // 通知を監視する
             NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { _ in
                 tetorinuVM.isRunning = false
-                print("App will resign active (moving to background)")
             }
             
             UIDevice.current.beginGeneratingDeviceOrientationNotifications()
