@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct MinoBlockView: View {
+    
+    let blockSize: CGFloat
+    let color: Color
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Rectangle()
+            .fill(color)
+            .frame(width: blockSize, height: blockSize).border(color == .black ? Color.white : Color.black, width: 0.3)
     }
-}
-
-#Preview {
-    MinoBlockView()
 }
