@@ -7,9 +7,13 @@
 
 import SwiftUI
 import SwiftData
+import GoogleMobileAds
 
 @main
 struct TetorinuApp: App {
+    
+    @UIApplicationDelegateAdaptor var appDelegate: AppDelegate
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
@@ -29,4 +33,15 @@ struct TetorinuApp: App {
         }
         .modelContainer(sharedModelContainer)
     }
+}
+
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+  func application(_ application: UIApplication,
+      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+    GADMobileAds.sharedInstance().start(completionHandler: nil)
+
+    return true
+  }
 }

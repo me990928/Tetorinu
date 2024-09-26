@@ -5,7 +5,7 @@
 //  Created by 広瀬友哉 on 2024/09/23.
 //
 
-import SwiftUICore
+import SwiftUI
 
 struct Block {
     let BlockShapeI: BlockShape = .init(size: 3, pattern: [
