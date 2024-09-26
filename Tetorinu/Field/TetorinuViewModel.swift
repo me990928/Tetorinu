@@ -6,8 +6,9 @@
 //
 
 import Observation
-import SwiftUICore
+import SwiftUI
 import Combine
+
 
 @Observable
 class TetorinuViewModel {
@@ -16,12 +17,14 @@ class TetorinuViewModel {
     let fieldWidth: Int = 10
     let fieldHeight: Int = 20
     
-    var time: Double = 1
+    var time: TimeLevel = .lebel1
     var timer: Timer?
     
     var score: Int = 0
+    var bestScore: Int = UserDefaults.standard.integer(forKey: "bestScore")
     
     var isRunning: Bool = false
+    var isPause: Bool = false
     
     var field: [[Field]]
     
@@ -35,6 +38,7 @@ class TetorinuViewModel {
     var isGameOver: Bool = false
     
     init() {
+        print("init")
         self.field = defaultField
         self.outputField = defaultField
     }
@@ -42,7 +46,7 @@ class TetorinuViewModel {
     func initTetorinu(){
         field = defaultField
         score = 0
-        time = 1
+        time = .lebel1
         drawScreen()
     }
     
@@ -61,7 +65,7 @@ class TetorinuViewModel {
         downBlock.x = fieldWidth / 2 - Block.init().BlockShapeNull.getSize() / 2
         downBlock.y = 0
     }
-
+    
     
     func nextBlock(){
         nextDownBlock.shape = Block.init().getRandomShape()
@@ -72,6 +76,49 @@ class TetorinuViewModel {
         }
         
         isNextDownBlock = true
+        
+        switch score {
+        case 0..<100:
+            time = .lebel1
+        case 100..<200:
+            time = .lebel2
+        case 200..<300:
+            time = .lebel3
+        case 300..<400:
+            time = .lebel4
+        case 400..<500:
+            time = .lebel5
+        case 500..<600:
+            time = .lebel6
+        default:
+            time = .lebel6
+        }
+        
+    }
+    
+    func getLevel() -> Int{
+        switch score {
+        case 0..<50:
+            return 1
+        case 50..<100:
+            return 2
+        case 100..<350:
+            return 3
+        case 350..<500:
+            return 4
+        case 500..<700:
+            return 5
+        case 700..<950:
+            return 6
+        case 950..<1200:
+            return 7
+        case 1200..<1300:
+            return 8
+        case 1300..<1500:
+            return 9
+        default:
+            return -1
+        }
     }
     
     func rotateBlock(){
@@ -152,7 +199,7 @@ class TetorinuViewModel {
         
         if blockIntersectField {
             // game over
-//            initTetorinu()
+            //            initTetorinu()
             isGameOver = true
             isRunning = false
         }
@@ -180,6 +227,7 @@ class TetorinuViewModel {
                     if field[y][x].type == BlockType.BlockSoft.rawValue {
                         field[y][x].type = BlockType.BlockNone.rawValue
                         score += 1
+                        setBestScore()
                     }
                 }
                 
@@ -203,6 +251,7 @@ class TetorinuViewModel {
             }
         }
         score += 3
+        setBestScore()
     }
     
     var blockIntersectField: Bool{
@@ -236,7 +285,7 @@ class TetorinuViewModel {
         }
         outputField = screen
     }
-   
+    
     func minoControl(command: Command){
         
         if isRunning == false {
@@ -265,33 +314,22 @@ class TetorinuViewModel {
     
     func tetorinuTimer(){
         
-        let minus: Double = 0.01
-        
         // 初期値の確認
-        if time == 1 {
-            timer = Timer.scheduledTimer(withTimeInterval: time, repeats: true) { [self] Timer in
-                if !self.isGameOver {
-                    if self.isRunning {
-                        fallBlock()
-                    }
+        timer = Timer.scheduledTimer(withTimeInterval: time.rawValue, repeats: true) { [self] Timer in
+            if !self.isGameOver {
+                if self.isRunning && !self.isPause {
+                    fallBlock()
+                    print(time.rawValue.description)
                 }
             }
-            return
         }
-        
-        if (time - minus) > 0 {
-            time -= minus
-            timer?.invalidate()
-            timer = Timer.scheduledTimer(withTimeInterval: time, repeats: true) { [self] Timer in
-                if !self.isGameOver {
-                    if self.isRunning {
-                        fallBlock()
-                    }
-                }
-            }
-            return
+    }
+    
+    func setBestScore(){
+        if score > bestScore {
+            bestScore = score
+            UserDefaults.standard.set(bestScore, forKey: "bestScore")
         }
-        
     }
 }
 
