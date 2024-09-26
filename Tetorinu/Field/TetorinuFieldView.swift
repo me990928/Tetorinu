@@ -7,12 +7,18 @@
 
 import SwiftUI
 import UIKit
+import GoogleMobileAds
+import AppTrackingTransparency
 
 struct TetorinuFieldView: View {
     @AppStorage("firstLaunch") var firstLaunch: Bool = true
     
     @State var tetorinuVM: TetorinuViewModel = .init()
     @StateObject var deviceOrientation: DeviceOrientation = DeviceOrientation()
+    
+    // ad vm
+    private var adInterstitialVM: InterstitialViewModel = InterstitialViewModel()
+    @State var isAlertInterstitial: Bool = false
     
     @State var width: CGFloat = 0
     @State var height: CGFloat = 0
@@ -59,12 +65,6 @@ struct TetorinuFieldView: View {
                                     self.blockSize = self.width / 10
                                 }
                                 
-                                // セットアップ
-                                tetorinuVM.initTetorinu()
-                                tetorinuVM.initBlock()
-                                tetorinuVM.nextBlock()
-                                tetorinuVM.drawScreen()
-                                tetorinuVM.tetorinuTimer()
                             }
                             .onChange(of: deviceOrientation.orientation.isPortrait) { oldValue, newValue in
                                 
@@ -130,18 +130,17 @@ struct TetorinuFieldView: View {
                 if tetorinuVM.isGameOver {
                     GameOverView(tetorinuVM: $tetorinuVM).onTapGesture {
                         tetorinuVM.isGameOver.toggle()
+                        tetorinuVM.isRunning.toggle()
                         
                         print("start1")
                         restartGame()
                     }
                 }
                 if !tetorinuVM.isRunning && !tetorinuVM.isGameOver {
-                    VStack{
-                        Text("Tap to Start").font(.title).foregroundStyle(.red)
-                    }.frame(width: geometry.size.width * 0.5, height: geometry.size.width * 0.3).background(
-                        .ultraThinMaterial,
-                        in: RoundedRectangle(cornerRadius: 30, style: .continuous)
-                    ).onTapGesture {
+                    GameStartView().onTapGesture {
+                        withAnimation {
+                            firstLaunch.toggle()
+                        }
                         tetorinuVM.isRunning.toggle()
                         
                         print("start2")
@@ -176,7 +175,32 @@ struct TetorinuFieldView: View {
             
         }.onDisappear(){
             UIDevice.current.endGeneratingDeviceOrientationNotifications()
+        }.onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            Task {
+                let result = await ATTrackingManager.requestTrackingAuthorization()
+                
+                if result == .authorized {
+                    GADMobileAds.sharedInstance().start(completionHandler: nil)
+                }
+                
+            }
         }
+    }
+    
+    func startGame() {
+        tetorinuVM.initTetorinu()
+        tetorinuVM.initBlock()
+        tetorinuVM.nextBlock()
+        tetorinuVM.drawScreen()
+        tetorinuVM.tetorinuTimer()
+    }
+    
+    func restartGame() {
+        tetorinuVM.initTetorinu()
+        tetorinuVM.initBlock()
+        tetorinuVM.nextBlock()
+        tetorinuVM.drawScreen()
+//        tetorinuVM.tetorinuTimer()
     }
 }
 
