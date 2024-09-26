@@ -97,7 +97,6 @@ struct TetorinuFieldView: View {
                         }.frame(width: width)
                         VStack(spacing: 0){
                             
-                            
                             Circle().fill(.blue).overlay {
                                 Image(systemName: tetorinuVM.isRunning ? "pause.fill" : "play.fill").foregroundStyle(.white)
                             }.frame(width: width * 0.2).padding(.bottom, 20)
@@ -132,8 +131,13 @@ struct TetorinuFieldView: View {
                                 Text("Score").foregroundStyle(.white)
                                 Text(tetorinuVM.score.description).foregroundStyle(.white).font(.caption)
                             }.padding(.top, 20)
+                            VStack{
+                                Text("Speed").foregroundStyle(.white)
+                                Text(tetorinuVM.time.description).foregroundStyle(.white).font(.caption)
+                            }.padding(.top, 20)
+                            
                             Spacer()
-                        }.frame(width: width * 0.3)
+                        }.frame(width: width * 0.3).padding(.top, ((geometry.size.height - height) / 2))
                         Spacer()
                     }
                     Spacer()
