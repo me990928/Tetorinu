@@ -19,6 +19,8 @@ class TetorinuViewModel {
     var time: Double = 1
     var timer: Timer?
     
+    var score: Int = 0
+    
     var isRunning: Bool = false
     
     var field: [[Field]]
@@ -39,6 +41,8 @@ class TetorinuViewModel {
     
     func initTetorinu(){
         field = defaultField
+        score = 0
+        time = 1
         drawScreen()
     }
     
@@ -175,6 +179,7 @@ class TetorinuViewModel {
                 for x in 0..<fieldWidth{
                     if field[y][x].type == BlockType.BlockSoft.rawValue {
                         field[y][x].type = BlockType.BlockNone.rawValue
+                        score += 1
                     }
                 }
                 
@@ -197,6 +202,7 @@ class TetorinuViewModel {
                 }
             }
         }
+        score += 3
     }
     
     var blockIntersectField: Bool{
