@@ -9,7 +9,22 @@ import SwiftUI
 
 struct ResumeView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        GeometryReader { geometry in
+            VStack{
+                Spacer()
+                HStack{
+                    Spacer()
+                    VStack{
+                        Text("Tap to Resume").font(.largeTitle).bold().foregroundStyle(.white)
+                    }.frame(width: geometry.size.width * 0.8, height: geometry.size.width * 0.3).background(
+                        .ultraThinMaterial,
+                        in: RoundedRectangle(cornerRadius: 30, style: .continuous)
+                    )
+                    Spacer()
+                }
+                Spacer()
+            }
+        }
     }
 }
 
