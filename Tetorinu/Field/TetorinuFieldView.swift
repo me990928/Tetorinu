@@ -12,6 +12,7 @@ import AppTrackingTransparency
 
 struct TetorinuFieldView: View {
     @AppStorage("firstLaunch") var firstLaunch: Bool = true
+    @Environment(\.scenePhase) var scenePhase
     
     @State var tetorinuVM: TetorinuViewModel = .init()
     @StateObject var deviceOrientation: DeviceOrientation = DeviceOrientation()
@@ -132,22 +133,20 @@ struct TetorinuFieldView: View {
                         tetorinuVM.isGameOver.toggle()
                         tetorinuVM.isRunning.toggle()
                         
-                        print("start1")
                         restartGame()
                     }
                 }
                 if !tetorinuVM.isRunning && !tetorinuVM.isGameOver {
                     GameStartView().onTapGesture {
                         withAnimation {
-                            firstLaunch.toggle()
+                            firstLaunch = false
                         }
                         tetorinuVM.isRunning.toggle()
                         
-                        print("start2")
                         startGame()
                     }
                 }
-                if tetorinuVM.isPause {
+                if tetorinuVM.isPause && !tetorinuVM.isGameOver && tetorinuVM.isRunning {
                     ResumeView().onTapGesture {
                         tetorinuVM.isPause.toggle()
                     }
@@ -165,11 +164,15 @@ struct TetorinuFieldView: View {
                 adInterstitialVM.showAd()
             }
         })
+        .onChange(of: scenePhase, {
+            if scenePhase == .inactive && !tetorinuVM.isGameOver && tetorinuVM.isRunning {
+                    tetorinuVM.isPause = true
+                }
+            if scenePhase == .background && !tetorinuVM.isGameOver && tetorinuVM.isRunning {
+                    tetorinuVM.isPause = true
+                }
+        })
         .onAppear(){
-            // 通知を監視する
-            NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { _ in
-                tetorinuVM.isRunning = false
-            }
             
             UIDevice.current.beginGeneratingDeviceOrientationNotifications()
             
