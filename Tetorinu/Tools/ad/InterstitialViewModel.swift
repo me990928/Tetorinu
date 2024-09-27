@@ -58,14 +58,14 @@ class InterstitialViewModel: NSObject, GADFullScreenContentDelegate {
     
     func adWillDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
         print("\(#function) called")
-        print("閉じた前")
+//        print("閉じた前")
     }
     
     func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
         print("\(#function) called")
         // Clear the interstitial ad.
         interstitialAd = nil
-        print("閉じた後")
+//        print("閉じた後")
         
         Task{
             await loadAd()

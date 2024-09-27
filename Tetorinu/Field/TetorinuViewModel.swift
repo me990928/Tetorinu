@@ -38,7 +38,6 @@ class TetorinuViewModel {
     var isGameOver: Bool = false
     
     init() {
-        print("init")
         self.field = defaultField
         self.outputField = defaultField
     }
@@ -319,7 +318,6 @@ class TetorinuViewModel {
             if !self.isGameOver {
                 if self.isRunning && !self.isPause {
                     fallBlock()
-                    print(time.rawValue.description)
                 }
             }
         }
