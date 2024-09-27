@@ -239,7 +239,7 @@ class TetorinuViewModel {
                         
                         if y2 == 0 {
                             field[y2][x].type = BlockType.BlockNone.rawValue
-                            field[y2][x].color = .clear
+                            field[y2][x].color = .black
                         } else {
                             if (field[y2 - 1][x].type != BlockType.BlockHard.rawValue) {
                                 field[y2][x] = field[y2 - 1][x]
