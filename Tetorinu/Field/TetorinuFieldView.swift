@@ -7,8 +7,6 @@
 
 import SwiftUI
 import UIKit
-import GoogleMobileAds
-import AppTrackingTransparency
 
 struct TetorinuFieldView: View {
     @AppStorage("firstLaunch") var firstLaunch: Bool = true
@@ -16,10 +14,6 @@ struct TetorinuFieldView: View {
     
     @State var tetorinuVM: TetorinuViewModel = .init()
     @StateObject var deviceOrientation: DeviceOrientation = DeviceOrientation()
-    
-    // ad vm
-    private var adInterstitialVM: InterstitialViewModel = InterstitialViewModel()
-    @State var isAlertInterstitial: Bool = false
     
     @State var width: CGFloat = 0
     @State var height: CGFloat = 0
@@ -155,13 +149,10 @@ struct TetorinuFieldView: View {
             TetorinuController(tetorinuVM: $tetorinuVM)
             VStack{
                 // kokukoku
-                let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(geometry.size.width)
-                BannerView(adSize).frame(height: adSize.size.height)
                 Spacer()
             }
         }.onChange(of: tetorinuVM.isGameOver, {
             if tetorinuVM.isGameOver {
-                adInterstitialVM.showAd()
             }
         })
         .onChange(of: scenePhase, {
@@ -178,15 +169,6 @@ struct TetorinuFieldView: View {
             
         }.onDisappear(){
             UIDevice.current.endGeneratingDeviceOrientationNotifications()
-        }.onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
-            Task {
-                let result = await ATTrackingManager.requestTrackingAuthorization()
-                
-                if result == .authorized {
-                    GADMobileAds.sharedInstance().start(completionHandler: nil)
-                }
-                
-            }
         }
     }
     

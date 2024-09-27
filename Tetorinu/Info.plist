@@ -4,8 +4,6 @@
 <dict>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
-	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-8112052463606561~8414936470</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>
